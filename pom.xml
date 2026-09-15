@@ -8,8 +8,8 @@
 		<version>4.1.1</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.solutis.helpdesk</groupId>
-	<artifactId>api-gateway</artifactId>
+	<groupId>com.solutis.projeto</groupId>
+	<artifactId>helpdesk-api-gateway</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name/>
 	<description/>
