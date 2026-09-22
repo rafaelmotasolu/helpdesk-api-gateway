@@ -56,7 +56,7 @@
 			<artifactId>jjwt-jackson</artifactId>
 			<version>${jjwt.version}</version>
 			<scope>runtime</scope>
-		</dependency>
+		</dependency> 
 
 		<!-- Actuator / Health Checks -->
 		<dependency>
