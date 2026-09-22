@@ -1,0 +1,35 @@
+server:
+  port: ${GATEWAY_PORT:${PORT:8080}}
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        # User Service Route
+        - id: user-service-route
+          uri: ${USER_SERVICE_URL:http://localhost:8081}
+          predicates:
+            - Path=/api/users/**
+          filters:
+            - StripPrefix=1
+
+        # Ticket Service Route
+        - id: ticket-service-route
+          uri: ${TICKET_SERVICE_URL:http://localhost:8082}
+          predicates:
+            - Path=/api/tickets/**
+          filters:
+            - StripPrefix=1
+
+        # Notification Service Route
+        - id: notification-service-route
+          uri: ${NOTIFICATION_SERVICE_URL:http://localhost:8083}
+          predicates:
+            - Path=/api/notifications/**
+          filters:
+            - StripPrefix=1
+
+jwt:
+  secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
