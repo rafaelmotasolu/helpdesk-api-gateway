@@ -5,10 +5,12 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.web.cors.reactive.CorsUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
@@ -22,6 +24,7 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     // Rotas públicas que não exigem validação de Bearer Token
     private final List<String> openApiEndpoints = List.of(
             "/api/users/auth/login",
+            "/api/auth/login",
             "/v3/api-docs",
             "/swagger-ui",
             "/actuator/health"
@@ -34,6 +37,12 @@ public class AuthenticationFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
+
+        // 0. Requisições preflight do CORS (OPTIONS) devem seguir sem validação de token
+        if (CorsUtils.isPreFlightRequest(request) || request.getMethod() == HttpMethod.OPTIONS) {
+            return chain.filter(exchange);
+        }
+
         String path = request.getURI().getPath();
 
         // 1. Se a rota for pública, segue adiante sem validar token

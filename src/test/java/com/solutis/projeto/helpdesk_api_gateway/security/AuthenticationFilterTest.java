@@ -55,6 +55,24 @@ class AuthenticationFilterTest {
     }
 
     @Test
+    @DisplayName("Deve permitir requisições preflight OPTIONS sem validar Authorization header")
+    void shouldAllowPreFlightOptionsRequests() {
+        MockServerHttpRequest request = MockServerHttpRequest.options("/api/tickets")
+                .header(HttpHeaders.ORIGIN, "http://localhost:5173")
+                .header(HttpHeaders.ACCESS_CONTROL_REQUEST_METHOD, "GET")
+                .build();
+        MockServerWebExchange exchange = MockServerWebExchange.from(request);
+
+        when(chain.filter(any(ServerWebExchange.class))).thenReturn(Mono.empty());
+
+        Mono<Void> result = filter.filter(exchange, chain);
+        result.block();
+
+        verify(chain).filter(exchange);
+        verifyNoInteractions(jwtUtils);
+    }
+
+    @Test
     @DisplayName("Deve retornar 401 quando Authorization header estiver ausente em rota protegida")
     void shouldReturn401WhenAuthorizationHeaderMissing() {
         MockServerHttpRequest request = MockServerHttpRequest.get("/api/tickets").build();

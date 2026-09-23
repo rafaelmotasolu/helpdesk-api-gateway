@@ -7,6 +7,14 @@ spring:
   cloud:
     gateway:
       routes:
+        # User Service Auth Route
+        - id: user-service-auth-route
+          uri: ${USER_SERVICE_URL:http://localhost:8081}
+          predicates:
+            - Path=/api/auth/**
+          filters:
+            - StripPrefix=1
+
         # User Service Route
         - id: user-service-route
           uri: ${USER_SERVICE_URL:http://localhost:8081}
@@ -33,3 +41,11 @@ spring:
 
 jwt:
   secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000,http://localhost:5173,http://localhost:80,http://localhost,http://127.0.0.1:3000,http://127.0.0.1:5173,http://127.0.0.1:80,http://localhost:*,http://127.0.0.1:*}
+
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE
+    org.springframework.web.reactive.DispatcherHandler: TRACE
